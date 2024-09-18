@@ -6,6 +6,7 @@
 class Hand{
     private:
         std::vector<const char *> cards = std::vector<const char *>();
+        int cardValues[NUM_CARD_POINTS] = CARD_POINTS;
     public:
         Hand(){}
 
@@ -13,7 +14,55 @@ class Hand{
             return cards.size();
         }
 
-        char * playCard(){
+        int getCardPoints(const char *card){
+            //TO DO: use real point values
+            return 10;
+        }
+
+        bool canPlayCard(const char *prevCard, const char *card){
+            //can always play wilds
+            //Needs modification for Harry's House Rules
+            if(card[CARD_SUIT] == 'W'){
+                return true;
+            }
+
+            //Can play on matching colors
+            if(card[CARD_SUIT] == prevCard[CARD_SUIT]){
+                return true;
+            }
+
+            //Can play on any matching card type
+            //Needs modification for Harry's House Rules 
+            //and for utility cards (skip, reverse)
+            if(card[CARD_TYPE] == prevCard[CARD_TYPE]){
+                return true;
+            }
+
+            return false;
+        }
+
+        const char * playCard(const char *prevCard){
+            std::vector<const char *>::iterator vi;
+            std::vector<const char *>::iterator maxi;
+            int maxScore = -1;
+
+            for(vi = cards.begin(); vi != cards.end(); vi++){
+                if(canPlayCard(prevCard, *vi)){
+                    if(getCardPoints(*vi)  > maxScore){
+                        maxScore = getCardPoints(*vi);
+                        maxi = vi;
+                    }
+                }
+            }
+
+            if(maxScore > -1){
+                const char *bestCard = *maxi; 
+                cards.erase(maxi); 
+                return bestCard;
+            }
+            
+            //No cards are able to be played
+            //TO DO: Implement drawing mechanic
             return NULL;
         }
 
@@ -49,7 +98,7 @@ class Deck{
             topDiscard = 0;
             currCard = 0;
             
-            //shuffle();  
+            shuffle();  
         }
 
     public:

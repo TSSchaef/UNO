@@ -38,8 +38,9 @@ class Game{
             deck.shuffle(); 
             players = deck.deal(numPlayers);
             deck.setup();
+            currPlayer = players.begin();
 
-            deck.print();
+            /*deck.print();
             std::cout << std::endl;
             std::cout << std::endl;
 
@@ -51,12 +52,23 @@ class Game{
 
             deck.print();
             std::cout << std::endl;
-            std::cout << std::endl;
+            std::cout << std::endl;*/
             
-            deck.playCard(deck.drawCard());
-            /*while(!finished()){
+            while(!finished()){
+                const char *cardPlayed = (*currPlayer).playCard(deck.topCard());
+                //TO DO: Implement logic for utility cards;
 
-              }*/
+                //Checking there was a cardPlayed (Not NULL)
+                if(cardPlayed){
+                    deck.playCard(cardPlayed);
+                }
+
+                currPlayer++;
+                numTurns++;
+                if(currPlayer == players.end()){
+                    currPlayer = players.begin();
+                }
+            }
         }
 
         void printInfo(){

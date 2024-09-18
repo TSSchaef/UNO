@@ -8,6 +8,22 @@
 #define CARD_SUIT 0
 #define CARD_TYPE 1
 
+/*
+ * R - Red
+ * Y - Yellow
+ * B - Blue
+ * G - Green
+ * 
+ * (R, Y, B, G) Number - Standard colored/numbered card
+ *
+ *  *S - Skip
+ *  *R - Reverse
+ *  *D - Draw two
+ *
+ *  W - Wild
+ *  W0 - Standard Wild
+ *  W4 - Wild and Draw 4
+ */
 #define DECK {"W4", "W4", "W4", "W4",\
               "W0", "W0", "W0", "W0",\
               "R0", "R1", "R1", "R2", "R2",\
@@ -30,6 +46,10 @@
               "Y5", "Y6", "Y6", "Y7", "Y7",\
               "Y8", "Y8", "Y9", "Y9", "YR",\
               "YR", "YS", "YS", "YD", "YD"}
+
+//Number of points: *0 *1 *2 *3 *4 *5 *5 *7 *8 *9  *R  *S  *D  W0  W4
+#define CARD_POINTS {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 20, 20, 20, 25, 50}
+#define NUM_CARD_POINTS 15
 
 #define NUM_STARTING_CARDS 7
 
