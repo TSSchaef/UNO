@@ -95,6 +95,7 @@ class Game{
                 lastCard = "B*";
             }
             char context[3];
+            bool goingForward = true;
 
             while(!finished()){
                 //std::cout << "Last card: " << lastCard << std::endl;
@@ -104,10 +105,13 @@ class Game{
                 if(cardPlayed){
                     deck.playCard(cardPlayed);
                     lastCard = cardPlayed;
+                    cardStats.noteCard(cardPlayed);
 
                     //TO DO: Implement logic for utility cards;
-                    //std::cout << cardPlayed << std::endl;
-                    cardStats.noteCard(cardPlayed);
+                    //Reverse
+                    if(cardPlayed[CARD_TYPE] == 'R'){
+                        goingForward = !goingForward; 
+                    }
 
                     if(cardPlayed[CARD_SUIT] == 'W'){
                         //generic color cards for if a wild is played
@@ -141,12 +145,22 @@ class Game{
 #endif
                 }
 
-                currPlayer++;
-                playerIndex++;
+
                 numTurns++;
-                if(currPlayer == players.end()){
-                    currPlayer = players.begin();
-                    playerIndex = 0;
+                if(goingForward){
+                    currPlayer++;
+                    playerIndex++;
+                    if(currPlayer == players.end()){
+                        currPlayer = players.begin();
+                        playerIndex = 0;
+                    }
+                } else {
+                    if(currPlayer == players.begin()){
+                        currPlayer = players.end();
+                        playerIndex = players.size();
+                    }
+                    currPlayer--;
+                    playerIndex--;
                 }
             }
 
