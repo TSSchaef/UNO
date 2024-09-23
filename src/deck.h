@@ -2,6 +2,8 @@
 #define DECK_H
 
 #include "util.h"
+#include "house_rules.h"
+
 bool canPlayCard(const char *prevCard, const char *card);
 
 class Hand{

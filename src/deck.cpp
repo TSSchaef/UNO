@@ -3,7 +3,6 @@
 
 bool canPlayCard(const char *prevCard, const char *card){
     //can always play wilds
-    //Needs modification for Harry's House Rules
     if(card[CARD_SUIT] == 'W'){
         return true;
     }
@@ -14,8 +13,6 @@ bool canPlayCard(const char *prevCard, const char *card){
     }
 
     //Can play on any matching card type
-    //Needs modification for Harry's House Rules 
-    //and for utility cards (skip, reverse)
     if(card[CARD_TYPE] == prevCard[CARD_TYPE]){
         return true;
     }
@@ -88,15 +85,35 @@ const char * Hand::playCard(const char *prevCard, char context[3]){
     std::vector<const char *>::iterator vi;
     std::vector<const char *>::iterator maxi;
     int maxScore = -1;
-
+    
+    int numPlayable = 0;
     for(vi = cards.begin(); vi != cards.end(); vi++){
         if(canPlayCard(prevCard, *vi)){
+            numPlayable++;
             if(getCardPoints(*vi)  > maxScore){
                 maxScore = getCardPoints(*vi);
                 maxi = vi;
             }
         }
     }
+
+    //House rule can only play wild draw 4's if no other card can be played
+    #ifdef RESTRICT_WILD_FOURS
+    if(numPlayable > 1 && (*maxi)[CARD_SUIT] == 'W' && (*maxi)[CARD_TYPE] == '4'){
+        int tempScore = -1;
+        for(vi = cards.begin(); vi != cards.end(); vi++){
+            //look for cards that aren't W4's and take the best out of those.
+            //If no cards meet these criteria (2 W4's in hand) the previous 
+            //best will be taken
+            if(canPlayCard(prevCard, *vi) && ((*vi)[CARD_SUIT] != 'W' || (*vi)[CARD_TYPE] != '4')){
+                if(getCardPoints(*vi)  > tempScore){
+                    tempScore = getCardPoints(*vi);
+                    maxi = vi;
+                }
+            }
+        }
+    }
+    #endif
 
     if(maxScore > -1){
         const char *bestCard = *maxi; 
@@ -234,7 +251,30 @@ const char *Deck::drawCard(){
     }
 
     if(!deck[currCard]){
-        std::cerr << "ERROR: No cards available to draw" << std::endl;
+        /*std::cerr << "ERROR: No cards available to draw" << std::endl;
+        int i;
+        bool noCards = true;
+        for(i = 0; i < DECK_SIZE; i++){
+           if(deck[i]){
+                std::cerr << "ERROR: Deck contains card, data structure error" << std::endl;
+                noCards = false;
+                break;
+           }
+        }
+
+        for(i = 0; i < DECK_SIZE; i++){
+           if(discard[i]){
+                std::cerr << "ERROR: Discard contains card, data structure error" << std::endl;
+                noCards = false;
+                break;
+           }
+        }
+
+        if(noCards){
+            std::cerr << "ERROR: Deck contains no cards, all cards in players hands" << std::endl;
+        }*/
+
+        return NULL;
     }
 
     const char *card = deck[currCard];
